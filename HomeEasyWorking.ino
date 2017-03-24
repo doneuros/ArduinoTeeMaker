@@ -10,12 +10,13 @@ const int LED_PIN =  13;    // the number of the LED pin
 const int LED_PIN_HOME_EASY =  8;
 const int TRANSMITTER_PIN =  4;//3; //https://funksteckdose.net/mit-microcontrollern-steuern    
 const int ONE_WIRE_BUS = 2;
+const int SERVO_PIN = 9;//https://learn.adafruit.com/adafruit-arduino-lesson-14-servo-motors?view=all
 
 HomeEasyCtrl easy(TRANSMITTER_PIN,LED_PIN_HOME_EASY);
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 // variables will change:
-bool state = 2; //true=On, false=Off 
+int state = 2; //true=On, false=Off 
 int buttonState = 0;         // variable for reading the pushbutton status
 int counter = 0;
 Servo servo1;
@@ -36,8 +37,7 @@ void setup() {
 
 void setUpServo(){
   pinMode(1,OUTPUT);
-  servo1.attach(14); //analog pin 0
-  
+  servo1.attach(SERVO_PIN); //analog pin 0
   Serial.println("Ready");
 }
 
@@ -48,14 +48,21 @@ void loop() {
      Serial.println("Tee Started");
      digitalWrite(LED_PIN,HIGH);
      easy.deviceOn(); 
-     //meassureTempreature();
-     delay(60000);
-     servo1.write(0);
+     meassureTempreature();
+     rotateServo();
      digitalWrite(LED_PIN,LOW);  
      easy.deviceOff();   
      Serial.println("Tee finished");
      state=0;
-  } else {
+  } if(state==2) {
+     for(int i=0;i<10;i++){
+        easy.deviceOn(); 
+        delay(1000);
+     }
+     easy.deviceOff(); 
+     state=0;
+     Serial.println("Learning Finish");
+  }else {  
     //listening for button or serial input to start tee routine
     buttonState = digitalRead(BUTTON_PIN);
     int data = readingData();
@@ -66,10 +73,19 @@ void loop() {
   }  
 }
 
+void rotateServo(){
+     servo1.write(0);
+     delay(1000);
+     servo1.write(170);
+     delay(1000);
+     servo1.write(0);
+}
+
 void meassureTempreature(){
   sensors.begin();      
-   for(int i=0;i<10;i++){
+   for(int i=0;i<100;i++){
       sensors.requestTemperatures();  
+      Serial.println(sensors.getTempCByIndex(0));
       if(sensors.getTempCByIndex(0)>60){
         return;
       }
