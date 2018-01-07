@@ -23,7 +23,7 @@ Servo servo1;
 
 void setup() {
   Serial.begin(9600);
-  
+  helper2();
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_PIN, OUTPUT);
   pinMode(LED_PIN_HOME_EASY, OUTPUT);
@@ -73,35 +73,9 @@ void loop() {
   }  
 }
 
-void rotateServo(){
-     servo1.write(0);
-     delay(1000);
-     servo1.write(170);
-     delay(1000);
-     servo1.write(0);
-}
 
-void meassureTempreature(){
-  sensors.begin();      
-   for(int i=0;i<100;i++){
-      sensors.requestTemperatures();  
-      Serial.println(sensors.getTempCByIndex(0));
-      if(sensors.getTempCByIndex(0)>60){
-        return;
-      }
-      delay(1000);
-   }
-  
-}
 
-int readingData(){
-    if (Serial.available()) {
-      int input = Serial.read()-'0';
-      if(input==1){
-        Serial.println("Serial Input for Tee");
-        return input;  
-      }      
-     } 
-     return 0;
-}
+
+
+
 
