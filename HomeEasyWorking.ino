@@ -3,6 +3,7 @@
 #include <Servo.h>
 #include <OneWire.h> 
 #include <DallasTemperature.h>
+#include <Keypad.h>
 
 // Turorial: http://www.instructables.com/id/Make-a-pushbutton-without-a-resistor/
 const int BUTTON_PIN = 6;//2;     // the number of the pushbutton pin
@@ -43,34 +44,8 @@ void setUpServo(){
 
 // the loop function runs over and over again forever
 void loop() {
-  //if tee is started
-  if(state==1){
-     Serial.println("Tee Started");
-     digitalWrite(LED_PIN,HIGH);
-     easy.deviceOn(); 
-     meassureTempreature();
-     rotateServo();
-     digitalWrite(LED_PIN,LOW);  
-     easy.deviceOff();   
-     Serial.println("Tee finished");
-     state=0;
-  } if(state==2) {
-     for(int i=0;i<10;i++){
-        easy.deviceOn(); 
-        delay(1000);
-     }
-     easy.deviceOff(); 
-     state=0;
-     Serial.println("Learning Finish");
-  }else {  
-    //listening for button or serial input to start tee routine
-    buttonState = digitalRead(BUTTON_PIN);
-    int data = readingData();
-    if(data==1 || buttonState==LOW){
-      Serial.println("Input for Tee");
-      state=1;
-    }
-  }  
+  Serial.println("loop ...");
+  //printMembraneInput();
 }
 
 
